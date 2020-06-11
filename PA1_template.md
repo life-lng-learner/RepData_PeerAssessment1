@@ -7,18 +7,19 @@ output:
 
 
 ## Loading and preprocessing the data
-```{r}
+
+```r
 if(!file.exists('activity.csv')){
   unzip('activity.zip')
 }
 
 steps_data<-read.csv('activity.csv')
-
 ```
 
 
 ## What is mean total number of steps taken per day?
-```{r}
+
+```r
 ##Convert dates to date class
 steps_data$date<-as.Date(steps_data$date,"%Y-%m-%d")
 
@@ -27,46 +28,55 @@ steps_per_day<-aggregate(steps_data$steps,by=list(date=steps_data$date),FUN=sum,
 
 ##Draw a histogram
 hist(steps_per_day$x,main="Total Number of Steps taken each day",xlab="Days",ylab="Number of Steps")
+```
 
+![](PA1_template_files/figure-html/unnamed-chunk-2-1.png)<!-- -->
+
+```r
 ##Calculate Mean
 steps_per_day_mean<-mean(steps_per_day$x)
 
 ##Calculate Median
 steps_per_day_median<-median(steps_per_day$x)
-
 ```
 
-Mean number of steps per day: ``r steps_per_day_mean ``
+Mean number of steps per day: `9354.2295082`
 
-Median number of steps per day: ``r steps_per_day_median ``
+Median number of steps per day: `10395`
 
 ## What is the average daily activity pattern?
-```{r}
+
+```r
 ##Calculate mean for each interval
 steps_per_interval_mean<-aggregate(steps_data,by=list(interval=steps_data$interval),FUN=mean,na.rm=TRUE)
 
 #Time series plot
 plot(steps_per_interval_mean$interval,steps_per_interval_mean$steps,type="l",main = "Mean of Steps for Each Interval",xlab = "Interval",ylab = "Mean of Steps")
-
-##Find the interval with the maximum number of steps
-max_interval<-(steps_per_interval_mean[which.max(steps_per_interval_mean$steps),])$interval
-
 ```
 
-Interval ``r max_interval ``,on average across all the days in the data set, contains the maximum number of steps
+![](PA1_template_files/figure-html/unnamed-chunk-3-1.png)<!-- -->
+
+```r
+##Find the interval with the maximum number of steps
+max_interval<-(steps_per_interval_mean[which.max(steps_per_interval_mean$steps),])$interval
+```
+
+Interval `835`,on average across all the days in the data set, contains the maximum number of steps
 
 ## Imputing missing values
 
-```{r}
+
+```r
 ##Total number of missing values
 num_missing<-sum(is.na(steps_data$steps))
 ```
 
-Number of missing values: ``r num_missing ``
+Number of missing values: `2304`
 
 The strategy I would use to fill missing values is via mean steps for intervals.
 
-```{r}
+
+```r
 ##Use mean steps for the interval to fill missing values
 
 #Make a copy of the steps data
@@ -84,26 +94,35 @@ steps_imputed_per_day<-aggregate(steps_data_imputed$steps,by=list(date=steps_dat
 
 ##Draw a histogram
 hist(as.numeric(steps_imputed_per_day$x),main="Total Number of Steps taken each day",xlab="Days",ylab="Number of Steps")
+```
 
+![](PA1_template_files/figure-html/unnamed-chunk-5-1.png)<!-- -->
+
+```r
 ##Calculate Mean
 steps_imputed_per_day_mean<-mean(steps_imputed_per_day$x)
 
 ##Calculate Median
 steps_imputed_per_day_median<-median(steps_imputed_per_day$x)
-
 ```
 
-Mean number of steps per day (after filling missing values): ``r steps_imputed_per_day_mean``
+Mean number of steps per day (after filling missing values): `1.0766189\times 10^{4}`
 
-Median number of steps per day (after filling missing values): ``r steps_imputed_per_day_median``
+Median number of steps per day (after filling missing values): `1.0766189\times 10^{4}`
 
 As can be observed above, the impact of imputing missing data on the estimates of the total daily number of steps is that it brings the median closer and equivalent to the mean.
 
 ## Are there differences in activity patterns between weekdays and weekends?
-```{r}
 
+```r
 library(ggplot2)
+```
 
+```
+## Warning: package 'ggplot2' was built under R version 3.6.3
+```
+
+```r
 #Assign a Weekday or Weekend tag to each row based on the date.
 for(j in 1:length(steps_data_imputed$steps)){
   if(weekdays(steps_data_imputed$date[j])=="Saturday" || weekdays(steps_data_imputed$date[j])=="Sunday"){
@@ -137,7 +156,8 @@ wkd_wknd_plot<-wkd_wknd_plot+xlab("Interval")+ylab("Total Steps")
 wkd_wknd_plot<-wkd_wknd_plot+ggtitle("Total Number of Steps by Interval")
 
 print(wkd_wknd_plot)
-
 ```
+
+![](PA1_template_files/figure-html/unnamed-chunk-6-1.png)<!-- -->
 
 Based on the two plots above, it seems during the morning hours on a weekday the step activity is higher than during the same hours on a weekend. However, the number of steps taken on the weekend seems to be more than those taken on a weekday possibly due to more recreational activities on a weekend.
