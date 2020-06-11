@@ -150,7 +150,7 @@ wkd_wknd_plot<-wkd_wknd_plot+facet_grid(wkdorwknd~.)
 wkd_wknd_plot<-wkd_wknd_plot+scale_x_discrete(breaks=seq(0,2400,by=200))
 
 #Add x and y axis labels
-wkd_wknd_plot<-wkd_wknd_plot+xlab("Interval")+ylab("Total Steps")
+wkd_wknd_plot<-wkd_wknd_plot+xlab("Interval")+ylab("Mean Steps")
 
 #Add plot title
 wkd_wknd_plot<-wkd_wknd_plot+ggtitle("Total Number of Steps by Interval")
